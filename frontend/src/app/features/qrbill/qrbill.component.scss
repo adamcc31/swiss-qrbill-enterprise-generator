@@ -1,0 +1,214 @@
+/* ==========================================================================
+   Swiss QR-bill Orchestrator Stylesheet
+   Includes: Modern Dashboard UI & Responsive Grid layout
+   ========================================================================== */
+
+/* 1. Dashboard Layout Structure */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left Sidebar (Form Inputs) */
+.sidebar-panel {
+  width: 480px;
+  background-color: #1e293b;
+  border-right: 1px solid #334155;
+  padding: 2.5rem;
+  overflow-y: auto;
+  max-height: 100vh;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+  flex-shrink: 0;
+}
+
+.sidebar-panel::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-panel::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 3px;
+}
+
+/* App Header inside Sidebar */
+.app-header {
+  margin-bottom: 2.5rem;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+  background-color: #ef4444;
+  color: white;
+  font-weight: 700;
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.logo-area h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #f8fafc;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+/* 2. Preview Panel (Right Side) */
+.preview-panel {
+  flex: 1;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.preview-header {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 1rem;
+}
+
+.preview-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-weight: 500;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* ==========================================================================
+   3. PRINT STYLESHEET (A4 Page, QR-bill exactly at the bottom)
+   ========================================================================== */
+@media print {
+  /* Reset browser elements */
+  :host {
+    display: block !important;
+    position: relative !important;
+    width: 210mm !important;
+    height: 297mm !important;
+  }
+  
+  .app-container {
+    display: block !important;
+    box-shadow: none !important;
+    background: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    position: relative !important;
+  }
+  
+  .sidebar-panel, 
+  .preview-header {
+    display: none !important;
+  }
+  
+  .preview-panel {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    background: none !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+}
+
+:host-context(.force-print-active) {
+  display: block !important;
+  position: relative !important;
+  width: 210mm !important;
+  height: 297mm !important;
+  
+  .app-container {
+    display: block !important;
+    box-shadow: none !important;
+    background: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    position: relative !important;
+  }
+  
+  .sidebar-panel, 
+  .preview-header {
+    display: none !important;
+  }
+  
+  .preview-panel {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    background: none !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+}
+
+/* Responsive adjustments for desktop/tablet display */
+@media (max-width: 1280px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .sidebar-panel {
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  .preview-panel {
+    max-height: none;
+    overflow-y: visible;
+    padding: 1.5rem;
+  }
+}

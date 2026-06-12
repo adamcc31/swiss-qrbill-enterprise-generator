@@ -1,0 +1,106 @@
+<div class="bill-page-container">
+  <div id="swiss-qr-bill" class="swiss-qr-bill" [ngClass]="{'has-amount': billData?.hasAmount, 'no-amount': !billData?.hasAmount}">
+    
+    <!-- LEFT PANEL: Receipt (Empfangsschein) -->
+    <div class="receipt-section">
+      <div class="slip-title">Empfangsschein</div>
+      
+      <div class="slip-data-block">
+        <div class="slip-label">Konto / Zahlbar an</div>
+        <div class="slip-val font-semibold">{{ billData?.formattedCreditorIban || 'CH00 0000 0000 0000 0000 0' }}</div>
+        <div class="slip-val" [innerHTML]="billData?.creditorAddressHtml || 'Name<br>Street No<br>ZIP City'"></div>
+      </div>
+
+      <div class="slip-data-block" *ngIf="billData?.formattedReferenceNumber && billData?.formattedReferenceNumber !== '-'">
+        <div class="slip-label">Referenz</div>
+        <div class="slip-val text-sm font-semibold word-break">{{ billData?.formattedReferenceNumber }}</div>
+      </div>
+
+      <div class="slip-data-block">
+        <div class="slip-label">Zahlbar durch</div>
+        <div class="slip-val" [innerHTML]="billData?.debtorAddressHtml || 'Name<br>Street No<br>ZIP City'"></div>
+      </div>
+
+      <!-- Currency & Amount in Receipt -->
+      <div class="receipt-amount-block">
+        <div class="amount-col">
+          <div class="slip-label">Währung</div>
+          <div class="currency-val">{{ billData?.currency || 'CHF' }}</div>
+        </div>
+        <div class="amount-col flex-grow text-right">
+          <div class="slip-label text-right">Betrag</div>
+          <div class="amount-val" *ngIf="billData?.hasAmount">{{ billData?.formattedAmount }}</div>
+          <!-- Box for manual amount entry if amount is empty -->
+          <div class="amount-empty-box" *ngIf="!billData?.hasAmount"></div>
+        </div>
+      </div>
+
+      <div class="slip-footer">
+        <div class="slip-label">Annahmestelle</div>
+      </div>
+    </div>
+
+    <!-- BLACK SCISSOR LINE / SEPARATOR -->
+    <div class="scissor-separator">
+      <span class="scissor-icon">✂</span>
+    </div>
+
+    <!-- RIGHT PANEL: Payment Part (Zahlteil) -->
+    <div class="payment-section">
+      <div class="payment-top-row">
+        <div class="payment-title">Zahlteil</div>
+      </div>
+
+      <div class="payment-main-grid">
+        <!-- Left Col: QR Code + Amount -->
+        <div class="payment-left-col">
+          <!-- QR Code Container -->
+          <div class="qr-code-wrapper" *ngIf="safeQrSvg" [innerHTML]="safeQrSvg"></div>
+          <div class="qr-code-wrapper placeholder" *ngIf="!safeQrSvg">
+            <!-- Loading/Placeholder QR box -->
+            <div class="qr-placeholder-text">QR Code Matrix</div>
+          </div>
+
+          <!-- Currency & Amount in Payment Part -->
+          <div class="payment-amount-block">
+            <div class="amount-col">
+              <div class="slip-label">Währung</div>
+              <div class="currency-val">{{ billData?.currency || 'CHF' }}</div>
+            </div>
+            <div class="amount-col flex-grow">
+              <div class="slip-label">Betrag</div>
+              <div class="amount-val" *ngIf="billData?.hasAmount">{{ billData?.formattedAmount }}</div>
+              <!-- Box for manual amount entry if amount is empty -->
+              <div class="amount-empty-box-large" *ngIf="!billData?.hasAmount"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Col: Payment Details Text -->
+        <div class="payment-right-col">
+          <div class="slip-data-block">
+            <div class="slip-label">Konto / Zahlbar an</div>
+            <div class="slip-val font-semibold">{{ billData?.formattedCreditorIban || 'CH00 0000 0000 0000 0000 0' }}</div>
+            <div class="slip-val" [innerHTML]="billData?.creditorAddressHtml || 'Name<br>Street No<br>ZIP City'"></div>
+          </div>
+
+          <div class="slip-data-block" *ngIf="billData?.formattedReferenceNumber && billData?.formattedReferenceNumber !== '-'">
+            <div class="slip-label">Referenz</div>
+            <div class="slip-val font-semibold word-break">{{ billData?.formattedReferenceNumber }}</div>
+          </div>
+
+          <div class="slip-data-block" *ngIf="billData?.message">
+            <div class="slip-label">Zusätzliche Informationen</div>
+            <div class="slip-val word-break">{{ billData?.message }}</div>
+          </div>
+
+          <div class="slip-data-block">
+            <div class="slip-label">Zahlbar durch</div>
+            <div class="slip-val" [innerHTML]="billData?.debtorAddressHtml || 'Name<br>Street No<br>ZIP City'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

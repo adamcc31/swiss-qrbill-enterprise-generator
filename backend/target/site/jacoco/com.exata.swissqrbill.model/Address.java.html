@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Address.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swiss-qrbill-enterprise</a> &gt; <a href="index.source.html" class="el_package">com.exata.swissqrbill.model</a> &gt; <span class="el_source">Address.java</span></div><h1>Address.java</h1><pre class="source lang-java linenums">package com.exata.swissqrbill.model;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class Address {
+
+    @NotBlank(message = &quot;Name is required.&quot;)
+    @Size(max = 70, message = &quot;Name must not exceed 70 characters.&quot;)
+    private String name;
+
+    @NotBlank(message = &quot;Street is required.&quot;)
+    @Size(max = 70, message = &quot;Street must not exceed 70 characters.&quot;)
+    private String street;
+
+    @NotBlank(message = &quot;House number is required.&quot;)
+    @Size(max = 16, message = &quot;House number must not exceed 16 characters.&quot;)
+    private String houseNo;
+
+    @NotBlank(message = &quot;Postal code is required.&quot;)
+    @Size(max = 16, message = &quot;Postal code must not exceed 16 characters.&quot;)
+    private String postalCode;
+
+    @NotBlank(message = &quot;Town is required.&quot;)
+    @Size(max = 35, message = &quot;Town/City must not exceed 35 characters.&quot;)
+    private String town;
+
+    @NotBlank(message = &quot;Country code is required.&quot;)
+    @Size(min = 2, max = 2, message = &quot;Country code must be exactly a 2-letter ISO code.&quot;)
+    private String countryCode;
+
+<span class="fc" id="L32">    public Address() {}</span>
+
+<span class="nc" id="L34">    public Address(String name, String street, String houseNo, String postalCode, String town, String countryCode) {</span>
+<span class="nc" id="L35">        this.name = name;</span>
+<span class="nc" id="L36">        this.street = street;</span>
+<span class="nc" id="L37">        this.houseNo = houseNo;</span>
+<span class="nc" id="L38">        this.postalCode = postalCode;</span>
+<span class="nc" id="L39">        this.town = town;</span>
+<span class="nc" id="L40">        this.countryCode = countryCode;</span>
+<span class="nc" id="L41">    }</span>
+
+    // Getters and Setters
+<span class="fc" id="L44">    public String getName() { return name; }</span>
+<span class="fc" id="L45">    public void setName(String name) { this.name = name; }</span>
+<span class="fc" id="L46">    public String getStreet() { return street; }</span>
+<span class="fc" id="L47">    public void setStreet(String street) { this.street = street; }</span>
+<span class="fc" id="L48">    public String getHouseNo() { return houseNo; }</span>
+<span class="fc" id="L49">    public void setHouseNo(String houseNo) { this.houseNo = houseNo; }</span>
+<span class="fc" id="L50">    public String getPostalCode() { return postalCode; }</span>
+<span class="fc" id="L51">    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }</span>
+<span class="fc" id="L52">    public String getTown() { return town; }</span>
+<span class="fc" id="L53">    public void setTown(String town) { this.town = town; }</span>
+<span class="fc" id="L54">    public String getCountryCode() { return countryCode; }</span>
+<span class="fc" id="L55">    public void setCountryCode(String countryCode) { this.countryCode = countryCode; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

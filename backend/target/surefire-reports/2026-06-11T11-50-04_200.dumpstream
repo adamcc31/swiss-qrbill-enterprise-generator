@@ -1,0 +1,5 @@
+# Created at 2026-06-11T11:50:04.430
+Boot Manifest-JAR contains absolute paths in classpath 'Z:\01 ADAM\00 DOKUMENTASI PROJECT\SWISS QR BILL\swiss-qrbill-enterprise\backend\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

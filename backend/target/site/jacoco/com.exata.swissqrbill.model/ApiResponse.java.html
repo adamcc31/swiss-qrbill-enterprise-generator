@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swiss-qrbill-enterprise</a> &gt; <a href="index.source.html" class="el_package">com.exata.swissqrbill.model</a> &gt; <span class="el_source">ApiResponse.java</span></div><h1>ApiResponse.java</h1><pre class="source lang-java linenums">package com.exata.swissqrbill.model;
+
+import java.util.List;
+
+public class ApiResponse&lt;T&gt; {
+    private boolean success;
+    private T data;
+    private List&lt;ValidationError&gt; errors;
+
+<span class="nc" id="L10">    public ApiResponse() {}</span>
+
+<span class="fc" id="L12">    public ApiResponse(boolean success, T data, List&lt;ValidationError&gt; errors) {</span>
+<span class="fc" id="L13">        this.success = success;</span>
+<span class="fc" id="L14">        this.data = data;</span>
+<span class="fc" id="L15">        this.errors = errors;</span>
+<span class="fc" id="L16">    }</span>
+
+    public static &lt;T&gt; ApiResponse&lt;T&gt; success(T data) {
+<span class="fc" id="L19">        return new ApiResponse&lt;&gt;(true, data, List.of());</span>
+    }
+
+    public static &lt;T&gt; ApiResponse&lt;T&gt; error(List&lt;ValidationError&gt; errors) {
+<span class="fc" id="L23">        return new ApiResponse&lt;&gt;(false, null, errors);</span>
+    }
+
+    public static &lt;T&gt; ApiResponse&lt;T&gt; error(String field, String message) {
+<span class="fc" id="L27">        return new ApiResponse&lt;&gt;(false, null, List.of(new ValidationError(field, message)));</span>
+    }
+
+    // Getters and setters
+    public boolean isSuccess() {
+<span class="fc" id="L32">        return success;</span>
+    }
+
+    public void setSuccess(boolean success) {
+<span class="nc" id="L36">        this.success = success;</span>
+<span class="nc" id="L37">    }</span>
+
+    public T getData() {
+<span class="fc" id="L40">        return data;</span>
+    }
+
+    public void setData(T data) {
+<span class="nc" id="L44">        this.data = data;</span>
+<span class="nc" id="L45">    }</span>
+
+    public List&lt;ValidationError&gt; getErrors() {
+<span class="fc" id="L48">        return errors;</span>
+    }
+
+    public void setErrors(List&lt;ValidationError&gt; errors) {
+<span class="nc" id="L52">        this.errors = errors;</span>
+<span class="nc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

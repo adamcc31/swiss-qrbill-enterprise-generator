@@ -1,0 +1,331 @@
+/* ==========================================================================
+   Swiss QR-bill CSS Stylesheet
+   Spec-Compliant Print Layout (SIX guidelines)
+   ========================================================================== */
+
+$font-bill: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+:host {
+  display: block;
+  width: 100%;
+  
+  @media print {
+    display: block !important;
+    width: 210mm !important;
+    height: 297mm !important;
+  }
+}
+
+.bill-page-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #1e293b;
+  border-radius: 16px;
+  box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  max-width: 950px;
+}
+
+/* physical size: 210mm x 105mm */
+.swiss-qr-bill {
+  display: flex;
+  width: 210mm;
+  height: 105mm;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: $font-bill;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* Left Section: Receipt (Empfangsschein) - Width: 62mm */
+.receipt-section {
+  width: 62mm;
+  height: 105mm;
+  padding: 5mm 3.2mm 5mm 5mm; /* Left margin 5mm, Right margin 3.2mm */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Scissor Line Separator */
+.scissor-separator {
+  width: 0;
+  height: 105mm;
+  border-left: 1px dashed #000000;
+  position: relative;
+  z-index: 10;
+}
+
+.scissor-icon {
+  position: absolute;
+  top: 5mm;
+  left: -2.5mm;
+  background-color: white;
+  width: 5mm;
+  height: 5mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8pt;
+  color: black;
+  transform: rotate(90deg);
+}
+
+/* Right Section: Payment Part (Zahlteil) - Width: 148mm */
+.payment-section {
+  width: 148mm;
+  height: 105mm;
+  padding: 5mm;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Text formatting inside Payment Slip */
+.slip-title {
+  font-size: 11pt;
+  font-weight: bold;
+  margin-bottom: 4mm;
+  font-family: $font-bill;
+}
+
+.payment-title {
+  font-size: 11pt;
+  font-weight: bold;
+  margin-bottom: 3mm;
+  font-family: $font-bill;
+}
+
+.slip-data-block {
+  margin-bottom: 3mm;
+}
+
+.slip-label {
+  font-size: 6pt;
+  font-weight: bold;
+  text-transform: none;
+  color: #000000;
+  margin-bottom: 0.5mm;
+}
+
+.slip-val {
+  font-size: 8pt;
+  line-height: 1.25;
+  color: #000000;
+}
+
+.font-semibold {
+  font-weight: bold;
+}
+
+.word-break {
+  word-break: break-all;
+}
+
+/* Receipt currency/amount block at bottom */
+.receipt-amount-block {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 2mm;
+}
+
+.amount-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.currency-val {
+  font-size: 8pt;
+  font-weight: normal;
+  margin-top: 1mm;
+}
+
+.amount-val {
+  font-size: 10pt;
+  font-weight: bold;
+  margin-top: 1mm;
+}
+
+/* Manual Amount Box if Amount is open */
+.amount-empty-box {
+  width: 30mm;
+  height: 10mm;
+  border: 0.75pt solid #000000;
+  background-color: white;
+  margin-top: 1mm;
+}
+
+.amount-empty-box-large {
+  width: 40mm;
+  height: 15mm;
+  border: 0.75pt solid #000000;
+  background-color: white;
+  margin-top: 1.5mm;
+}
+
+.slip-footer {
+  font-size: 6pt;
+  border-top: 0.5pt solid #000000;
+  padding-top: 1mm;
+}
+
+/* Payment Main Grid Layout (Left Col: QR + Amount, Right Col: Details) */
+.payment-main-grid {
+  display: flex;
+  flex-grow: 1;
+  gap: 5mm;
+}
+
+.payment-left-col {
+  width: 51mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.payment-right-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* QR Code centering & size (46mm x 46mm) */
+.qr-code-wrapper {
+  position: relative;
+  width: 46mm;
+  height: 46mm;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::ng-deep svg {
+    width: 46mm !important;
+    height: 46mm !important;
+    display: block;
+  }
+}
+
+.qr-placeholder-text {
+  font-size: 8pt;
+  color: #777;
+  border: 1px dashed #bbb;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Currency & Amount in Payment part */
+.payment-amount-block {
+  display: flex;
+  align-items: flex-end;
+  gap: 5mm;
+  margin-top: 2mm;
+
+  .currency-val {
+    font-size: 10pt;
+  }
+
+  .amount-val {
+    font-size: 14pt;
+    font-weight: bold;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLESHEET (A4 Page, QR-bill exactly at the bottom)
+   ========================================================================== */
+@media print {
+  .bill-page-container {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    position: static !important;
+  }
+  
+  .swiss-qr-bill {
+    width: 210mm !important;
+    height: 105mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-top: 1px dashed #000000; /* Thin line for cutting, if scissors line not printed */
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Show dotted lines for cutting */
+  .scissor-separator {
+    border-left: 1px dashed #000000 !important;
+  }
+}
+
+:host-context(.force-print-active) {
+  .bill-page-container {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    position: static !important;
+  }
+  
+  .swiss-qr-bill {
+    width: 210mm !important;
+    height: 105mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-top: 1px dashed #000000; /* Thin line for cutting, if scissors line not printed */
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Show dotted lines for cutting */
+  .scissor-separator {
+    border-left: 1px dashed #000000 !important;
+  }
+}
+
+/* Responsive adjustments for desktop/tablet display */
+@media (max-width: 1280px) {
+  .bill-page-container {
+    overflow-x: auto;
+    padding: 1rem;
+    justify-content: flex-start;
+  }
+  
+  .swiss-qr-bill {
+    min-width: 210mm; /* Keep standard size scrollable on small screens */
+  }
+}

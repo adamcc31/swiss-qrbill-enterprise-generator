@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QrBillController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">swiss-qrbill-enterprise</a> &gt; <a href="index.source.html" class="el_package">com.exata.swissqrbill.controller</a> &gt; <span class="el_source">QrBillController.java</span></div><h1>QrBillController.java</h1><pre class="source lang-java linenums">package com.exata.swissqrbill.controller;
+
+import com.exata.swissqrbill.model.ApiResponse;
+import com.exata.swissqrbill.model.QrBillRequest;
+import com.exata.swissqrbill.model.QrBillResponse;
+import com.exata.swissqrbill.model.ValidationError;
+import com.exata.swissqrbill.service.QrBillService;
+import com.exata.swissqrbill.service.ValidationService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.time.Instant;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/v1/qrbill&quot;)
+public class QrBillController {
+
+    private final QrBillService qrBillService;
+    private final ValidationService validationService;
+
+    // Enforce constructor injection strictly
+<span class="fc" id="L25">    public QrBillController(QrBillService qrBillService, ValidationService validationService) {</span>
+<span class="fc" id="L26">        this.qrBillService = qrBillService;</span>
+<span class="fc" id="L27">        this.validationService = validationService;</span>
+<span class="fc" id="L28">    }</span>
+
+    @PostMapping(&quot;/generate&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;QrBillResponse&gt;&gt; generateQrBill(@Valid @RequestBody QrBillRequest request) {
+<span class="fc" id="L32">        QrBillResponse response = qrBillService.generateQrBill(request);</span>
+<span class="fc" id="L33">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    @PostMapping(&quot;/download&quot;)
+    public ResponseEntity&lt;byte[]&gt; downloadPdf(@Valid @RequestBody QrBillRequest request) {
+<span class="fc" id="L38">        byte[] pdfBytes = qrBillService.generatePdf(request);</span>
+        
+<span class="fc" id="L40">        String filename = &quot;swiss-qrbill-&quot; + Instant.now().getEpochSecond() + &quot;.pdf&quot;;</span>
+        
+<span class="fc" id="L42">        return ResponseEntity.ok()</span>
+<span class="fc" id="L43">                .contentType(MediaType.APPLICATION_PDF)</span>
+<span class="fc" id="L44">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=\&quot;&quot; + filename + &quot;\&quot;&quot;)</span>
+<span class="fc" id="L45">                .body(pdfBytes);</span>
+    }
+
+    @PostMapping(&quot;/validate&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;String&gt;&gt; validateQrBill(@RequestBody QrBillRequest request) {
+<span class="fc" id="L50">        List&lt;ValidationError&gt; errors = validationService.validateRequest(request);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (!errors.isEmpty()) {</span>
+<span class="fc" id="L52">            return ResponseEntity.badRequest().body(ApiResponse.error(errors));</span>
+        }
+<span class="fc" id="L54">        return ResponseEntity.ok(ApiResponse.success(&quot;Valid&quot;));</span>
+    }
+
+    @GetMapping(&quot;/health&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;String&gt;&gt; healthCheck() {
+<span class="fc" id="L59">        return ResponseEntity.ok(ApiResponse.success(&quot;Healthy&quot;));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

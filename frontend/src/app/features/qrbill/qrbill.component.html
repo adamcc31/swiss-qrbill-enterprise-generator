@@ -1,0 +1,33 @@
+<div class="app-container">
+  <!-- Left Sidebar: Input Form & Settings -->
+  <aside class="sidebar-panel">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">+</span>
+        <h1>Swiss QR-Bill Creator</h1>
+      </div>
+      <p class="subtitle">ISO 20022 Compliant Payment Generator</p>
+    </header>
+
+    <!-- Global API Error list -->
+    <app-api-error [errors]="apiErrors"></app-api-error>
+
+    <!-- QR Input Form -->
+    <app-qrbill-form 
+      [isGenerated]="billData !== null"
+      (formSubmit)="onFormSubmit($event)" 
+      (printTrigger)="onPrint()">
+    </app-qrbill-form>
+  </aside>
+
+  <!-- Right Preview Panel: Live rendering of QR-Bill -->
+  <main class="preview-panel">
+    <div class="preview-header">
+      <h2>QR-Bill Preview</h2>
+      <span class="live-indicator"><span class="pulse-dot"></span> Live Render</span>
+    </div>
+
+    <!-- Compliant Payment Slip -->
+    <app-payment-slip [billData]="billData"></app-payment-slip>
+  </main>
+</div>
