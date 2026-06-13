@@ -21,19 +21,26 @@ import { ValidationError } from '../../../core/models/qrbill.model';
   `,
   styles: [`
     .error-container {
-      background-color: rgba(244, 63, 94, 0.1);
-      border: 1px solid #f43f5e;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+      background-color: rgba(244, 63, 94, 0.05);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      box-shadow: 0 4px 20px rgba(244, 63, 94, 0.12);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.75rem;
       color: #f8fafc;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .error-header {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.65rem;
       color: #f43f5e;
+      font-size: 0.95rem;
     }
     .error-list {
       margin-left: 1.5rem;

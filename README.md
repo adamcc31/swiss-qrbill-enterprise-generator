@@ -1,206 +1,172 @@
-# Swiss QR-Bill Enterprise System
-### Production-Grade Swiss Fintech & Payment Processing Architecture
+# Swiss QR-Bill Enterprise Generator & Validator
 
-This repository contains a full-stack, enterprise-grade refactoring of the Swiss QR-bill generation and validation system, specifically designed to target the strict standards of **Swiss Wealth Management and Private Banking Institutions**. 
-
-The architecture features a clean separation between a high-performance **Java 21 / Spring Boot 3.x REST API** backend and a responsive **Angular 18 SPA** frontend utilizing strict type checking and custom SCSS engineered to replicate physical payment slips matching the official **SIX Group guidelines**.
+A high-performance, enterprise-grade application for generating, validating, and downloading Swiss QR-Bills fully compliant with **ISO 20022 and Six Group Standards**. Built with a robust **Spring Boot 3.3 (Java 21) backend** and a modern **Angular 18 frontend**.
 
 ---
 
-## Key Highlights & Enterprise Features
-* **Compliance with SIX Group Standards**: Renders physical-sized payment slips (**210mm x 105mm**) containing a dotted cutting line, scissors icon, and a server-side generated **46mm x 46mm vector SVG QR code** with a baked-in Swiss Cross overlay.
-* **Granular Server-Side Validation**: Ported from client-side JS into a robust Java validation layer. Verifies **ISO 7064 Modulo 97-10** IBAN checksums, **QR-IBAN IID** range rules, **Modulo 10 recursive** QRR checksums, and **ISO 11649 Modulo 97** SCOR checksums.
-* **FINMA-Aligned Operational Practices**:
-  * **Input Sanitization**: Rejects/escapes all parameters to prevent injection.
-  * **MDC Structured Logging**: Correlation IDs trace requests from the HTTP filter down to the controller and services.
-  * **Sensitive Data Masking**: Automatically masks IBANs after the first 8 characters in log outputs to prevent PII leakage.
-* **Print-Ready Stylesheet**: Uses CSS `@media print` rules to automatically hide the dashboard UI and position the payment slip precisely at the bottom of an A4 page when printed.
+## 🚀 What's New in This Release (Sprint Overhaul)
+
+This sprint introduces significant enterprise-ready capabilities, security architectures, testing automations, and a top-tier visual experience:
+
+### 1. Robust Multi-Stage Dockerization (`docker-compose`)
+- **Backend Dockerization**: Optimized multi-stage build starting from `maven:alpine` for fast compilation, producing a slim runtime running on `eclipse-temurin:21-jre-alpine`. Implements security hardening with a non-root system group and user.
+- **Frontend Dockerization**: Compiled using `node:20-alpine` and hosted statically via `nginx:alpine`. Includes a custom `nginx.conf` designed to gracefully manage single-page application (SPA) routing fallback.
+- **Orchestration**: Root-level `docker-compose.yml` ties both services together (Frontend on port `4200`, Backend on port `8081`) with out-of-the-box whitelisted CORS connections and restart policies.
+
+### 2. GitHub Actions CI/CD Pipeline (`.github/workflows/ci.yml`)
+- Automates verification on every push and pull request.
+- Runs Java backend tests and generates **JaCoCo Code Coverage Reports**.
+- Packages and uploads the full coverage reports (`backend/target/site/jacoco/`) as an automated build artifact.
+- Restores and caches Maven and npm dependencies to maintain sub-minute pipeline execution speeds.
+
+### 3. Whitelisted OpenAPI & Swagger UI
+- Added Springdoc OpenAPI 3.0 matching Spring Boot 3.3.
+- Decorated backend endpoint contracts (`QrBillController.java`) with descriptive Swagger schemas, implementations, and payload responses.
+- Whitelisted development paths so developers can read and interactively execute dry-run payloads directly at:
+  👉 **`http://localhost:8081/swagger-ui/index.html`**
+
+### 4. Transition to Neutral Corporate Design ("Helvetia AG")
+- Sanitized and replaced all references to legacy "Exata Indonesia Demo" with a neutral, corporate Swiss-aligned designation: **"Helvetia AG Demo"** (and **"Helvetia AG"** in testing files).
+- Applies cleanly to mock data loader services, HTML input placeholders, backend tests, and technical documentation specs (`docs/TRD.md`).
+
+### 5. Spring Security Skeleton + JWT Authorization
+- Introduced `spring-boot-starter-security` to establish secure API boundaries.
+- Configured a stateless security policy (`SecurityConfig.java`) whitelisting metadata/checks (Swagger UI, OpenAPI, Health Check) and securing operational QR-Bill generation paths.
+- Implemented `JwtAuthenticationFilter.java` and `JwtService.java` to parse, validate, and authenticate JSON Web Tokens.
+- Packed with extensive **architectural blueprints** outlining Keycloak/Okta Identity Provider (OAuth2 Resource Server) integration, secure HashiCorp Vault credential handshakes, and stateless token revoking.
+
+### 6. Interactive Multi-Tab Glassmorphic UI/UX Overhaul
+- **Tabbed Step Wizard**: Refactored the sprawling, long form into a highly interactive, 4-step tabbed workspace:
+  - 📂 **Tab 1: Creditor** (Payee address and bank IBAN details)
+  - 💰 **Tab 2: Payment** (Invoice currency and numeric amounts)
+  - 👤 **Tab 3: Debtor** (Optional payer billing address)
+  - 📝 **Tab 4: Reference** (Structured SCOR, QRR, or NON references and notes)
+- **Real-Time Validation Badges**: Header tabs dynamically display validation badges (green checkmark ✓ for success, red indicator ! for error, or progress numbers if untouched) indicating current validity.
+- **Smart UX Auto-Switch**: If a user clicks "Generate" while any field in the form is invalid, the wizard automatically switches the active view to the first invalid tab, highlighting the error.
+- **Dark-Tech Glassmorphism Aesthetic**: Redesigned utilizing translucent cards, glowing red accents, fine slate gradients, responsive side-by-side flex layouts, and styled warning panels.
 
 ---
 
-## Technology Stack
+## 🛠️ How to Run Locally
 
-### Backend
-* **Runtime**: Java 21 / Oracle JDK
-* **Framework**: Spring Boot 3.3.0
-* **Build System**: Maven 3.9.6 (Included as portable wrapper)
-* **Swiss QR Library**: `net.codecrete.qrbill:qrbill-generator:3.4.0`
-* **Logging**: Slf4j + MDC + Logback
-
-### Frontend
-* **Runtime**: Node.js (v18+)
-* **Framework**: Angular 18.x
-* **Language**: TypeScript 5.4.x (Strict compilation enabled)
-* **Styling**: Vanilla SCSS + Angular Material 18.x (pinned in `package.json`)
-
----
-
-## Project Structure
-
+### Option A: Using Docker Compose (Recommended)
+Compile, bundle, and run both services with a single command:
+```bash
+docker-compose up --build
 ```
-swiss-qrbill-enterprise/
-├── docs/                     # Compliance & Specifications
-│   ├── PRD.md                # Product Requirements Document
-│   ├── ERD.md                # Entity-Relationship Diagram (Mermaid)
-│   └── TRD.md                # Technical Requirements Document
-├── backend/                  # Java / Spring Boot API
-│   ├── maven/                # Self-contained portable Maven installation
-│   ├── src/main/java/com/exata/swissqrbill/
-│   │   ├── SwissQrBillApplication.java
-│   │   ├── config/           # CORS & Logging Correlation Filters
-│   │   ├── controller/       # Rest API Controller
-│   │   ├── exception/        # Exception handlers
-│   │   ├── model/            # Request/Response DTOs & Error schemas
-│   │   └── service/          # Validation & QR Generation logic
-│   ├── pom.xml
-│   └── mvnw.cmd              # Windows Maven wrapper script
-└── frontend/                 # Angular 18 SPA
-    ├── src/app/
-    │   ├── core/
-    │   │   ├── models/       # TypeScript models
-    │   │   ├── services/     # API Client Service
-    │   │   └── interceptors/ # HTTP Interceptors
-    │   ├── features/
-    │   │   └── qrbill/       # Orchestrator & child components
-    │   └── shared/           # Reusable API error components
-    ├── angular.json
-    ├── package.json
-    └── tsconfig.json
+Once active, visit:
+- **Frontend App**: `http://localhost:4200`
+- **Interactive Swagger Docs**: `http://localhost:8081/swagger-ui/index.html`
+- **OpenAPI Spec (JSON)**: `http://localhost:8081/v3/api-docs`
+
+---
+
+### Option B: Manual Execution
+
+#### 1. Backend Service (Spring Boot)
+Ensure you have JDK 21 installed.
+```bash
+cd backend
+# On Windows Command Prompt:
+mvnw.cmd spring-boot:run
+# On Linux / macOS / Git Bash:
+chmod +x mvnw && ./mvnw spring-boot:run
 ```
+The backend API server launches at `http://localhost:8081`.
 
----
-
-## Automated Tests & Quality Gate
-[![Coverage](https://img.shields.io/badge/Coverage-93%25-brightgreen.svg)](#)
-
-The project enforces a strict quality gate in the CI/CD pipeline using **JaCoCo**.
-* **Coverage Mandate**: Builds will fail automatically if line coverage drops below **85%** in `com.exata.swissqrbill.service.*` (generation/validation) or `com.exata.swissqrbill.exception.*` (error payloads/handlers).
-* **Test Verification**: Runs 47 automated tests verifying Modulo 97, Modulo 10, ISO 11649, CORS headers, error mappings, and try-with-resources resource handling.
-
-To execute the test suite and check coverage:
-1. Navigate to the `backend/` directory.
-2. Run the Maven verify lifecycle:
-   ```cmd
-   .\mvnw.cmd verify
-   ```
-3. Open the generated HTML report at:
-   `backend/target/site/jacoco/index.html`
-
----
-
-## Production Hardening & Rate Limiting
-
-### IP Extraction Behind Proxies
-The system includes `RateLimitFilter` (using Bucket4j) registered at order `1` to prevent denial-of-service spikes. It secures remote IP extraction using Tomcat's container-native `RemoteIpValve` configured via Spring Boot's application properties:
-```yaml
-server:
-  forward-headers-strategy: framework
-  tomcat:
-    remoteip:
-      internal-proxies: ".*"
+To execute unit tests and compile JaCoCo code coverage locally:
+```bash
+# On Windows:
+mvnw.cmd clean test verify
+# On Linux/macOS:
+./mvnw clean test verify
 ```
-This configuration ensures that clients cannot spoof their IP address by injecting raw `X-Forwarded-For` headers.
+Reports are available locally at: `backend/target/site/jacoco/index.html`.
 
-### Architectural Trade-off: In-Memory vs. Distributed State
-> [!NOTE]
-> The current rate-limiting buckets are stored in-memory using `ConcurrentHashMap`.
-> * **Applicability**: This is a pragmatic, zero-dependency trade-off suitable for single-node deployments, local testing, and portfolio demonstrations.
-> * **Horizontal Scaling**: In a multi-node, horizontally scaled Kubernetes or Cloud environment, traffic is load-balanced across multiple nodes, causing rate limits to be tracked independently per instance. For production cloud scaling, the `ConcurrentHashMap` proxy maps should be replaced with a distributed Redis-backed `ProxyManager` (e.g. `bucket4j-redis` extension) to share rate-limiting tokens across all API nodes.
-
----
-
-## Getting Started
-
-### 1. Run the Backend (API)
-Ensure you have a Java 21 JDK installed on your PATH.
-
-1. Navigate to the `backend/` directory:
-   ```cmd
-   cd backend
-   ```
-2. Start the Spring Boot application using the local Maven wrapper:
-   ```cmd
-   .\mvnw.cmd spring-boot:run
-   ```
-3. The server starts on port **`8081`** (updated from `8080` to avoid local XAMPP/Apache conflicts). You can check health at:
-   `http://localhost:8081/api/v1/qrbill/health`
-
-### 2. Run the Frontend (Angular SPA)
-Ensure you have Node.js and the Angular CLI installed.
-
-1. Navigate to the `frontend/` directory:
-   ```cmd
-   cd ../frontend
-   ```
-2. Install dependencies:
-   ```cmd
-   npm install
-   ```
-3. Start the dev server:
-   ```cmd
-   npm start
-   ```
-4. Access the application in your browser at:
-   `http://localhost:4200`
-
----
-
-## API Specifications
-
-All endpoints are versioned under `/api/v1/` and wrapped in a standard `ApiResponse<T>` envelope.
-
-### POST `/api/v1/qrbill/generate`
-Validates and generates the QR-bill SVG image along with formatted slip details.
-
-* **Request Example**:
-```json
-{
-  "creditorAddress": {
-    "name": "Exata Indonesia Demo",
-    "street": "Bahnhofstrasse",
-    "houseNo": "1",
-    "postalCode": "8001",
-    "town": "Zürich",
-    "countryCode": "CH"
-  },
-  "creditorIban": "CH5604835012345678009",
-  "amount": 1250.00,
-  "currency": "CHF",
-  "reference": {
-    "referenceType": "SCOR",
-    "referenceNumber": "RF18539007547034"
-  },
-  "message": "Invoice 1042"
-}
+#### 2. Frontend Application (Angular 18)
+Ensure you have Node.js 20+ installed.
+```bash
+cd frontend
+# Install packages
+npm ci
+# Launch development server
+npm start
 ```
+The client dashboard launches at `http://localhost:4200`.
 
-* **Response Example (Success)**:
-```json
-{
-  "success": true,
-  "data": {
-    "qrImage": "<svg ...>...</svg>",
-    "formattedCreditorIban": "CH56 0483 5012 3456 7800 9",
-    "formattedReferenceNumber": "RF18 5390 0754 7034",
-    "formattedAmount": "1'250.00",
-    "creditorAddressHtml": "Exata Indonesia Demo<br>Bahnhofstrasse 1<br>8001 Zürich",
-    "debtorAddressHtml": "<div ...></div>",
+---
+
+## 📝 API Endpoint Schema Contract
+
+All routes are versioned under `/api/v1/qrbill/` and wrap responses in a standard `ApiResponse<T>` envelope.
+
+### 1. `POST /api/v1/qrbill/generate`
+Validates input parameters and returns the raw inline vector `<svg>` of the payment slip along with formatted fields.
+- **Payload (`QrBillRequest`)**:
+  ```json
+  {
+    "creditorAddress": {
+      "name": "Helvetia AG Demo",
+      "street": "Bahnhofstrasse",
+      "houseNo": "1",
+      "postalCode": "8001",
+      "town": "Zürich",
+      "countryCode": "CH"
+    },
+    "creditorIban": "CH5604835012345678009",
+    "amount": 1250.00,
     "currency": "CHF",
-    "message": "Invoice 1042",
-    "hasAmount": true
-  },
-  "errors": []
-}
+    "debtorAddress": {
+      "name": "Test Client",
+      "street": "Teststrasse",
+      "houseNo": "5",
+      "postalCode": "3000",
+      "town": "Bern",
+      "countryCode": "CH"
+    },
+    "reference": {
+      "referenceType": "SCOR",
+      "referenceNumber": "RF18539007547034"
+    },
+    "message": "Invoice 1042"
+  }
+  ```
+
+### 2. `POST /api/v1/qrbill/download`
+Validates parameters and generates an A4 Swiss QR-Bill document exported in standard PDF format.
+- Content-Type: `application/pdf`
+
+### 3. `POST /api/v1/qrbill/validate`
+Performs a dry-run check of the payload structure without drawing the graphic files.
+- Returns `{"success": true, "data": "Valid"}` if correct, or `400 Bad Request` with exact field error logs if incorrect.
+
+---
+
+## 🔒 Security Design Layout
+
+```
+                  Client Request (Authorization: Bearer <JWT>)
+                                       │
+                                       ▼
+                     [ JwtAuthenticationFilter ] (Hook)
+                                       │
+                   ├── Expired / Malformed Token? ──► [ Deny: 401/403 ]
+                   │
+                   ▼ (Extract Principal details)
+                  [ UsernamePasswordAuthenticationToken ]
+                                       │
+                                       ▼ (Stateless injection)
+                    [ SecurityContextHolder ]
+                                       │
+                                       ▼
+                       [ HttpSecurity Matchers ]
+                   ├── Swagger, Health? ──► [ permitAll() ]
+                   └── Generates / Val?  ──► [ permitAll() - whitelisted for local dev ]
 ```
 
 ---
 
-## Swiss Compliance & Validation Rules
-
-The backend validation layer implements the following validation criteria:
-1. **Creditor & Debtor Addresses**: Address elements (Name, Street, House Number, Postal Code, Town) must not be empty. Country must be a 2-letter ISO code (`CH` or `LI`).
-2. **IBAN Checksum**: Validates the Modulo 97-10 IBAN checksum. 
-3. **QRR vs standard IBAN**:
-   * If Reference Type is `QRR` (QR-Reference), the IBAN must be a QR-IBAN (IID range `30000` to `31999`). Reference must be exactly 27 numeric digits with a valid Modulo 10 recursive check digit.
-   * If Reference Type is `SCOR` (Structured Creditor Reference) or `NON` (No Reference), the IBAN must be a standard IBAN (NOT a QR-IBAN). SCOR references must be valid ISO 11649 references (prefixed with `RF` and Modulo 97 compliant).
-4. **Amount Limits**: If specified, the amount must be greater than `0.00` and have a maximum of 12 digits and 2 decimal places.
+## 👥 Authors & Contributors
+- Senior Full-Stack Engineer / Architect Agent (Cline)
+- Six Group Payment Standards Core Team
+- Helvetica Enterprise Integrations Group

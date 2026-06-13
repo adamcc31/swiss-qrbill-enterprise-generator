@@ -1,76 +1,150 @@
 /* ==========================================================================
-   Swiss QR-bill Orchestrator Stylesheet
-   Includes: Modern Dashboard UI & Responsive Grid layout
+   Swiss QR-bill Orchestrator Stylesheet (Modern Dark-Tech Dashboard)
    ========================================================================== */
 
-/* 1. Dashboard Layout Structure */
+/* 1. Global Dark Theme Background Setup */
 .app-container {
   display: flex;
   min-height: 100vh;
+  background: linear-gradient(135deg, #090d16 0%, #111827 100%);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #f1f5f9;
 }
 
-/* Left Sidebar (Form Inputs) */
+/* Left Sidebar (Glassmorphic Dark Sidebar Panel) */
 .sidebar-panel {
-  width: 480px;
-  background-color: #1e293b;
-  border-right: 1px solid #334155;
-  padding: 2.5rem;
+  width: 490px;
+  background-color: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2.25rem;
   overflow-y: auto;
   max-height: 100vh;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 15px 0 35px rgba(0, 0, 0, 0.4);
   scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-panel::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .sidebar-panel::-webkit-scrollbar-thumb {
-  background-color: #334155;
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: 3px;
 }
 
 /* App Header inside Sidebar */
 .app-header {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  gap: 0.85rem;
+  margin-bottom: 0.65rem;
 }
 
 .logo-icon {
   background-color: #ef4444;
-  color: white;
-  font-weight: 700;
-  font-size: 1.5rem;
-  width: 36px;
-  height: 36px;
+  font-size: 1.45rem;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.logo-area h1 {
+.title-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.title-meta h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.version-badge {
+  font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  color: #f8fafc;
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 0.1rem 0.45rem;
+  border-radius: 50px;
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .subtitle {
   color: #94a3b8;
-  font-size: 0.875rem;
+  font-size: 0.825rem;
+  line-height: 1.35;
+  margin: 0 0 1.25rem 0;
 }
 
-/* 2. Preview Panel (Right Side) */
+/* Developer Whitelisted Swagger Banner */
+.swagger-info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background-color: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pulse-dot-blue {
+  width: 7px;
+  height: 7px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  animation: pulseBlue 1.8s infinite;
+}
+
+@keyframes pulseBlue {
+  0% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+  100% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+.swagger-text {
+  font-size: 0.775rem;
+  color: #93c5fd;
+  font-weight: 500;
+}
+
+.swagger-link {
+  color: #3b82f6;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.swagger-link:hover {
+  color: #60a5fa;
+}
+
+/* 2. Preview Panel (Right Side Panel Area) */
 .preview-panel {
   flex: 1;
   padding: 2.5rem;
@@ -80,57 +154,73 @@
   justify-content: flex-start;
   max-height: 100vh;
   overflow-y: auto;
+  position: relative;
 }
 
 .preview-header {
   width: 100%;
-  max-width: 900px;
+  max-width: 950px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #334155;
-  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 1.25rem;
+}
+
+.header-main-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .preview-header h2 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #f8fafc;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
 }
 
 .live-indicator {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.825rem;
   color: #10b981;
-  background-color: rgba(16, 185, 129, 0.1);
-  padding: 0.35rem 0.75rem;
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  padding: 0.35rem 0.8rem;
   border-radius: 50px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: #10b981;
   border-radius: 50%;
-  animation: pulse 1.5s infinite;
+  animation: pulseGreen 1.5s infinite;
 }
 
-@keyframes pulse {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0.6; }
+@keyframes pulseGreen {
+  0% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 /* ==========================================================================
    3. PRINT STYLESHEET (A4 Page, QR-bill exactly at the bottom)
    ========================================================================== */
 @media print {
-  /* Reset browser elements */
   :host {
     display: block !important;
     position: relative !important;
@@ -163,38 +253,33 @@
   }
 }
 
-:host-context(.force-print-active) {
+/* Print simulation for verification */
+.force-print-active :host,
+.force-print-active .app-container {
   display: block !important;
   position: relative !important;
   width: 210mm !important;
   height: 297mm !important;
-  
-  .app-container {
-    display: block !important;
-    box-shadow: none !important;
-    background: none !important;
-    width: 210mm !important;
-    height: 297mm !important;
-    position: relative !important;
-  }
-  
-  .sidebar-panel, 
-  .preview-header {
-    display: none !important;
-  }
-  
-  .preview-panel {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 210mm !important;
-    height: 297mm !important;
-    background: none !important;
-    overflow: hidden !important;
-    display: block !important;
-  }
+  background: #ffffff !important;
+  color: #000000 !important;
 }
 
-/* Responsive adjustments for desktop/tablet display */
+.force-print-active .sidebar-panel,
+.force-print-active .preview-header {
+  display: none !important;
+}
+
+.force-print-active .preview-panel {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 210mm !important;
+  height: 297mm !important;
+  background: none !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+/* 4. Responsive Breakdown Details */
 @media (max-width: 1280px) {
   .app-container {
     flex-direction: column;
@@ -204,6 +289,8 @@
     width: 100%;
     max-height: none;
     overflow-y: visible;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   .preview-panel {

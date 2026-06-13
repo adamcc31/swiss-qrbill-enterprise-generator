@@ -51,7 +51,7 @@ Validates and generates the QR code SVG and slip details.
   ```json
   {
     "creditorAddress": {
-      "name": "Exata Indonesia Demo",
+      "name": "Helvetia AG Demo",
       "street": "Bahnhofstrasse",
       "houseNo": "1",
       "postalCode": "8001",
@@ -86,7 +86,7 @@ Validates and generates the QR code SVG and slip details.
       "formattedCreditorIban": "CH56 0483 5012 3456 7800 9",
       "formattedReferenceNumber": "RF18 5390 0754 7034",
       "formattedAmount": "1'250.00",
-      "creditorAddressHtml": "Exata Indonesia Demo<br>Bahnhofstrasse 1<br>8001 Zürich",
+      "creditorAddressHtml": "Helvetia AG Demo<br>Bahnhofstrasse 1<br>8001 Zürich",
       "debtorAddressHtml": "Test Client<br>Teststrasse 5<br>CH-3000 Bern",
       "currency": "CHF",
       "message": "Invoice 1042",

@@ -18,8 +18,54 @@ export class QrBillFormComponent implements OnInit {
 
   qrForm!: FormGroup;
   referenceHint: string = 'Select a reference type';
+  activeTab: number = 0; // 0: Creditor, 1: Payment, 2: Debtor, 3: Ref & Msg
 
   constructor(private fb: FormBuilder, private qrBillService: QrBillService) {}
+
+  setTab(index: number): void {
+    this.activeTab = index;
+  }
+
+  // Getters for individual tab validity status
+  get isCreditorTabValid(): boolean {
+    const creditorAddress = this.qrForm.get('creditorAddress');
+    const creditorIban = this.qrForm.get('creditorIban');
+    return !!(creditorAddress && creditorAddress.valid && creditorIban && creditorIban.valid);
+  }
+
+  get isPaymentTabValid(): boolean {
+    const amount = this.qrForm.get('amount');
+    const currency = this.qrForm.get('currency');
+    return !!(amount && amount.valid && currency && currency.valid);
+  }
+
+  get isDebtorTabValid(): boolean {
+    const debtorAddress = this.qrForm.get('debtorAddress');
+    return !!(debtorAddress && debtorAddress.valid);
+  }
+
+  get isReferenceTabValid(): boolean {
+    const reference = this.qrForm.get('reference');
+    const message = this.qrForm.get('message');
+    return !!(reference && reference.valid && message && message.valid);
+  }
+
+  // Tells if a tab is touched/dirty AND has validation errors
+  get tabHasErrors(): boolean[] {
+    const creditorInvalid = !this.isCreditorTabValid && 
+      (this.qrForm.get('creditorAddress')?.touched || this.qrForm.get('creditorIban')?.touched);
+    
+    const paymentInvalid = !this.isPaymentTabValid && 
+      (this.qrForm.get('amount')?.touched || this.qrForm.get('currency')?.touched);
+    
+    const debtorInvalid = !this.isDebtorTabValid && 
+      this.qrForm.get('debtorAddress')?.touched;
+    
+    const refInvalid = !this.isReferenceTabValid && 
+      (this.qrForm.get('reference')?.touched || this.qrForm.get('message')?.touched);
+
+    return [!!creditorInvalid, !!paymentInvalid, !!debtorInvalid, !!refInvalid];
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -125,7 +171,7 @@ export class QrBillFormComponent implements OnInit {
   loadMockData(): void {
     this.qrForm.patchValue({
       creditorAddress: {
-        name: 'Exata Indonesia Demo',
+        name: 'Helvetia AG Demo',
         street: 'Bahnhofstrasse',
         houseNo: '1',
         postalCode: '8001',
@@ -188,6 +234,17 @@ export class QrBillFormComponent implements OnInit {
     } else {
       // Mark all as touched to display validation errors
       this.qrForm.markAllAsTouched();
+      
+      // Auto-switch to the first tab that has validation errors for superior UX
+      if (!this.isCreditorTabValid) {
+        this.activeTab = 0;
+      } else if (!this.isPaymentTabValid) {
+        this.activeTab = 1;
+      } else if (!this.isDebtorTabValid) {
+        this.activeTab = 2;
+      } else if (!this.isReferenceTabValid) {
+        this.activeTab = 3;
+      }
     }
   }
 

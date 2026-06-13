@@ -1,186 +1,266 @@
-<form [formGroup]="qrForm" (ngSubmit)="onSubmit()" novalidate>
+<form [formGroup]="qrForm" (ngSubmit)="onSubmit()" novalidate class="tabbed-form">
   
-  <!-- Section: Creditor Information -->
-  <section class="form-section" formGroupName="creditorAddress">
-    <h2><span class="section-num">1</span> Creditor (Payee)</h2>
-    
-    <div class="input-group">
-      <label for="creditorName">Creditor Name *</label>
-      <input type="text" id="creditorName" formControlName="name" placeholder="e.g., Exata Indonesia Demo" maxlength="70">
-      <span class="error-msg" *ngIf="isInvalid('creditorAddress.name')">
-        {{ getErrorMessage('creditorAddress.name', 'Creditor Name') }}
+  <!-- Modern Interactive Tab Headers -->
+  <div class="tabs-navigation">
+    <button type="button" class="tab-header" [class.active]="activeTab === 0" (click)="setTab(0)">
+      <span class="tab-badge" [class.valid]="isCreditorTabValid" [class.invalid]="tabHasErrors[0]">
+        <span class="tab-status-icon" *ngIf="isCreditorTabValid">✓</span>
+        <span class="tab-status-icon" *ngIf="tabHasErrors[0]">!</span>
+        <span class="tab-number" *ngIf="!isCreditorTabValid && !tabHasErrors[0]">1</span>
       </span>
-    </div>
+      <span class="tab-title">Creditor</span>
+    </button>
 
-    <div class="input-row">
-      <div class="input-group flex-3">
-        <label for="creditorStreet">Street *</label>
-        <input type="text" id="creditorStreet" formControlName="street" placeholder="e.g., Bahnhofstrasse" maxlength="70">
-        <span class="error-msg" *ngIf="isInvalid('creditorAddress.street')">
-          {{ getErrorMessage('creditorAddress.street', 'Street') }}
-        </span>
-      </div>
-      <div class="input-group flex-1">
-        <label for="creditorHouseNo">No. *</label>
-        <input type="text" id="creditorHouseNo" formControlName="houseNo" placeholder="e.g., 1" maxlength="16">
-        <span class="error-msg" *ngIf="isInvalid('creditorAddress.houseNo')">
-          {{ getErrorMessage('creditorAddress.houseNo', 'House no.') }}
-        </span>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-group flex-1">
-        <label for="creditorZip">ZIP *</label>
-        <input type="text" id="creditorZip" formControlName="postalCode" placeholder="e.g., 8001" maxlength="16">
-        <span class="error-msg" *ngIf="isInvalid('creditorAddress.postalCode')">
-          {{ getErrorMessage('creditorAddress.postalCode', 'ZIP') }}
-        </span>
-      </div>
-      <div class="input-group flex-2">
-        <label for="creditorCity">City *</label>
-        <input type="text" id="creditorCity" formControlName="town" placeholder="e.g., Zürich" maxlength="35">
-        <span class="error-msg" *ngIf="isInvalid('creditorAddress.town')">
-          {{ getErrorMessage('creditorAddress.town', 'City') }}
-        </span>
-      </div>
-      <div class="input-group flex-1">
-        <label for="creditorCountry">Country *</label>
-        <input type="text" id="creditorCountry" formControlName="countryCode" placeholder="e.g., CH" maxlength="2">
-        <span class="error-msg" *ngIf="isInvalid('creditorAddress.countryCode')">
-          {{ getErrorMessage('creditorAddress.countryCode', 'Country') }}
-        </span>
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label for="creditorIban">IBAN / QR-IBAN *</label>
-      <input type="text" id="creditorIban" [formControl]="$any(qrForm.get('creditorIban'))" placeholder="CH56 0483 5012 3456 7800 9">
-      <span class="error-msg" *ngIf="isInvalid('creditorIban')">
-        {{ getErrorMessage('creditorIban', 'IBAN') }}
+    <button type="button" class="tab-header" [class.active]="activeTab === 1" (click)="setTab(1)">
+      <span class="tab-badge" [class.valid]="isPaymentTabValid" [class.invalid]="tabHasErrors[1]">
+        <span class="tab-status-icon" *ngIf="isPaymentTabValid">✓</span>
+        <span class="tab-status-icon" *ngIf="tabHasErrors[1]">!</span>
+        <span class="tab-number" *ngIf="!isPaymentTabValid && !tabHasErrors[1]">2</span>
       </span>
-      <small class="hint-text">QR-Reference requires a QR-IBAN (IID 30000-31999). SCOR/NON require standard IBAN.</small>
-    </div>
-  </section>
+      <span class="tab-title">Payment</span>
+    </button>
 
-  <!-- Section: Payment Details -->
-  <section class="form-section">
-    <h2><span class="section-num">2</span> Payment Details</h2>
-    
-    <div class="input-row">
-      <div class="input-group flex-2">
-        <label for="amount">Amount (Optional)</label>
-        <input type="number" id="amount" [formControl]="$any(qrForm.get('amount'))" placeholder="e.g., 1250.00" min="0.01" step="0.01" max="999999999999.99">
-        <span class="error-msg" *ngIf="isInvalid('amount')">
-          {{ getErrorMessage('amount', 'Amount') }}
-        </span>
-        <small class="hint-text">Leave blank for open amount</small>
-      </div>
-      <div class="input-group flex-1">
-        <label for="currency">Currency *</label>
-        <select id="currency" [formControl]="$any(qrForm.get('currency'))">
-          <option value="CHF">CHF</option>
-          <option value="EUR">EUR</option>
-        </select>
-        <span class="error-msg" *ngIf="isInvalid('currency')">
-          {{ getErrorMessage('currency', 'Currency') }}
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section: Debtor Information -->
-  <section class="form-section" formGroupName="debtorAddress">
-    <h2><span class="section-num">3</span> Debtor (Payable By - Optional)</h2>
-    
-    <div class="input-group">
-      <label for="debtorName">Debtor Name</label>
-      <input type="text" id="debtorName" formControlName="name" placeholder="e.g., Test Client" maxlength="70">
-      <span class="error-msg" *ngIf="isInvalid('debtorAddress.name')">
-        {{ getErrorMessage('debtorAddress.name', 'Debtor Name') }}
+    <button type="button" class="tab-header" [class.active]="activeTab === 2" (click)="setTab(2)">
+      <span class="tab-badge" [class.valid]="isDebtorTabValid" [class.invalid]="tabHasErrors[2]">
+        <span class="tab-status-icon" *ngIf="isDebtorTabValid">✓</span>
+        <span class="tab-status-icon" *ngIf="tabHasErrors[2]">!</span>
+        <span class="tab-number" *ngIf="!isDebtorTabValid && !tabHasErrors[2]">3</span>
       </span>
-    </div>
+      <span class="tab-title">Debtor</span>
+    </button>
 
-    <div class="input-row">
-      <div class="input-group flex-3">
-        <label for="debtorStreet">Street</label>
-        <input type="text" id="debtorStreet" formControlName="street" placeholder="e.g., Teststrasse" maxlength="70">
-        <span class="error-msg" *ngIf="isInvalid('debtorAddress.street')">
-          {{ getErrorMessage('debtorAddress.street', 'Street') }}
-        </span>
-      </div>
-      <div class="input-group flex-1">
-        <label for="debtorHouseNo">No.</label>
-        <input type="text" id="debtorHouseNo" formControlName="houseNo" placeholder="e.g., 5" maxlength="16">
-        <span class="error-msg" *ngIf="isInvalid('debtorAddress.houseNo')">
-          {{ getErrorMessage('debtorAddress.houseNo', 'House no.') }}
-        </span>
-      </div>
-    </div>
-
-    <div class="input-row">
-      <div class="input-group flex-1">
-        <label for="debtorZip">ZIP</label>
-        <input type="text" id="debtorZip" formControlName="postalCode" placeholder="e.g., 3000" maxlength="16">
-        <span class="error-msg" *ngIf="isInvalid('debtorAddress.postalCode')">
-          {{ getErrorMessage('debtorAddress.postalCode', 'ZIP') }}
-        </span>
-      </div>
-      <div class="input-group flex-2">
-        <label for="debtorCity">City</label>
-        <input type="text" id="debtorCity" formControlName="town" placeholder="e.g., Bern" maxlength="35">
-        <span class="error-msg" *ngIf="isInvalid('debtorAddress.town')">
-          {{ getErrorMessage('debtorAddress.town', 'City') }}
-        </span>
-      </div>
-      <div class="input-group flex-1">
-        <label for="debtorCountry">Country</label>
-        <input type="text" id="debtorCountry" formControlName="countryCode" placeholder="CH" maxlength="2">
-        <span class="error-msg" *ngIf="isInvalid('debtorAddress.countryCode')">
-          {{ getErrorMessage('debtorAddress.countryCode', 'Country') }}
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section: Reference & Message -->
-  <section class="form-section" formGroupName="reference">
-    <h2><span class="section-num">4</span> Reference & Message</h2>
-    
-    <div class="input-group">
-      <label for="referenceType">Reference Type *</label>
-      <select id="referenceType" formControlName="referenceType">
-        <option value="QRR">QR-Reference (QRR)</option>
-        <option value="SCOR">Structured Creditor Reference (SCOR)</option>
-        <option value="NON">No Reference (NON)</option>
-      </select>
-      <span class="error-msg" *ngIf="isInvalid('reference.referenceType')">
-        {{ getErrorMessage('reference.referenceType', 'Reference Type') }}
+    <button type="button" class="tab-header" [class.active]="activeTab === 3" (click)="setTab(3)">
+      <span class="tab-badge" [class.valid]="isReferenceTabValid" [class.invalid]="tabHasErrors[3]">
+        <span class="tab-status-icon" *ngIf="isReferenceTabValid">✓</span>
+        <span class="tab-status-icon" *ngIf="tabHasErrors[3]">!</span>
+        <span class="tab-number" *ngIf="!isReferenceTabValid && !tabHasErrors[3]">4</span>
       </span>
-    </div>
-
-    <div class="input-group" *ngIf="qrForm.get('reference.referenceType')?.value !== 'NON'">
-      <label for="referenceNumber">Reference Number *</label>
-      <input type="text" id="referenceNumber" formControlName="referenceNumber" placeholder="Payment reference">
-      <span class="error-msg" *ngIf="isInvalid('reference.referenceNumber')">
-        {{ getErrorMessage('reference.referenceNumber', 'Reference Number') }}
-      </span>
-      <small class="hint-text">{{ referenceHint }}</small>
-    </div>
-
-    <div class="input-group">
-      <label for="message">Message / Additional Info (Optional)</label>
-      <input type="text" id="message" [formControl]="$any(qrForm.get('message'))" placeholder="e.g., Invoice 1042" maxlength="140">
-      <span class="error-msg" *ngIf="isInvalid('message')">
-        {{ getErrorMessage('message', 'Message') }}
-      </span>
-    </div>
-  </section>
-
-  <!-- Form Actions -->
-  <div class="form-actions">
-    <button type="submit" id="btnGenerate" class="btn btn-primary" [disabled]="qrForm.invalid">Generate QR-Bill</button>
-    <button type="button" id="btnDownload" class="btn btn-secondary" (click)="onDownloadPdf()" [disabled]="!isGenerated || qrForm.invalid">Download PDF</button>
-    <button type="button" id="btnPrint" class="btn btn-secondary" (click)="onPrint()">Print QR-Bill</button>
+      <span class="tab-title">Details</span>
+    </button>
   </div>
+
+  <!-- Tab Content Area -->
+  <div class="tabs-content">
+    
+    <!-- Tab 1: Creditor Information (Active Tab 0) -->
+    <div class="tab-pane" *ngIf="activeTab === 0" formGroupName="creditorAddress">
+      <div class="tab-header-description">
+        <h3>Creditor (Payee) Address</h3>
+        <p>Supply the payment recipient's registered company details and bank account IBAN.</p>
+      </div>
+
+      <div class="input-group">
+        <label for="creditorName">Creditor Name *</label>
+        <input type="text" id="creditorName" formControlName="name" placeholder="e.g., Helvetia AG Demo" maxlength="70">
+        <span class="error-msg" *ngIf="isInvalid('creditorAddress.name')">
+          {{ getErrorMessage('creditorAddress.name', 'Creditor Name') }}
+        </span>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group flex-3">
+          <label for="creditorStreet">Street *</label>
+          <input type="text" id="creditorStreet" formControlName="street" placeholder="e.g., Bahnhofstrasse" maxlength="70">
+          <span class="error-msg" *ngIf="isInvalid('creditorAddress.street')">
+            {{ getErrorMessage('creditorAddress.street', 'Street') }}
+          </span>
+        </div>
+        <div class="input-group flex-1">
+          <label for="creditorHouseNo">No. *</label>
+          <input type="text" id="creditorHouseNo" formControlName="houseNo" placeholder="e.g., 1" maxlength="16">
+          <span class="error-msg" *ngIf="isInvalid('creditorAddress.houseNo')">
+            {{ getErrorMessage('creditorAddress.houseNo', 'House no.') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group flex-1">
+          <label for="creditorZip">ZIP *</label>
+          <input type="text" id="creditorZip" formControlName="postalCode" placeholder="e.g., 8001" maxlength="16">
+          <span class="error-msg" *ngIf="isInvalid('creditorAddress.postalCode')">
+            {{ getErrorMessage('creditorAddress.postalCode', 'ZIP') }}
+          </span>
+        </div>
+        <div class="input-group flex-2">
+          <label for="creditorCity">City *</label>
+          <input type="text" id="creditorCity" formControlName="town" placeholder="e.g., Zürich" maxlength="35">
+          <span class="error-msg" *ngIf="isInvalid('creditorAddress.town')">
+            {{ getErrorMessage('creditorAddress.town', 'City') }}
+          </span>
+        </div>
+        <div class="input-group flex-1">
+          <label for="creditorCountry">Country *</label>
+          <input type="text" id="creditorCountry" formControlName="countryCode" placeholder="e.g., CH" maxlength="2">
+          <span class="error-msg" *ngIf="isInvalid('creditorAddress.countryCode')">
+            {{ getErrorMessage('creditorAddress.countryCode', 'Country') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="creditorIban">IBAN / QR-IBAN *</label>
+        <input type="text" id="creditorIban" [formControl]="$any(qrForm.get('creditorIban'))" placeholder="CH56 0483 5012 3456 7800 9">
+        <span class="error-msg" *ngIf="isInvalid('creditorIban')">
+          {{ getErrorMessage('creditorIban', 'IBAN') }}
+        </span>
+        <small class="hint-text">QR-Reference requires a QR-IBAN (IID 30000-31999). SCOR/NON require a standard IBAN.</small>
+      </div>
+
+      <div class="tab-pane-navigation">
+        <button type="button" class="btn btn-primary btn-next-tab" (click)="setTab(1)">Next: Payment Details ➔</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Payment Details (Active Tab 1) -->
+    <div class="tab-pane" *ngIf="activeTab === 1">
+      <div class="tab-header-description">
+        <h3>Payment Details</h3>
+        <p>Set up the invoice currency and optional transaction amount limits.</p>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group flex-2">
+          <label for="amount">Amount (Optional)</label>
+          <input type="number" id="amount" [formControl]="$any(qrForm.get('amount'))" placeholder="e.g., 1250.00" min="0.01" step="0.01" max="999999999999.99">
+          <span class="error-msg" *ngIf="isInvalid('amount')">
+            {{ getErrorMessage('amount', 'Amount') }}
+          </span>
+          <small class="hint-text">Leave blank for open amount</small>
+        </div>
+        <div class="input-group flex-1">
+          <label for="currency">Currency *</label>
+          <select id="currency" [formControl]="$any(qrForm.get('currency'))">
+            <option value="CHF">CHF</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <span class="error-msg" *ngIf="isInvalid('currency')">
+            {{ getErrorMessage('currency', 'Currency') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="tab-pane-navigation dual-buttons">
+        <button type="button" class="btn btn-secondary" (click)="setTab(0)">⬅ Previous</button>
+        <button type="button" class="btn btn-primary" (click)="setTab(2)">Next: Debtor Details ➔</button>
+      </div>
+    </div>
+
+    <!-- Tab 3: Debtor Information (Active Tab 2) -->
+    <div class="tab-pane" *ngIf="activeTab === 2" formGroupName="debtorAddress">
+      <div class="tab-header-description">
+        <h3>Debtor (Payable By - Optional)</h3>
+        <p>Provide invoice recipient details. If a name is filled, the address fields become required.</p>
+      </div>
+
+      <div class="input-group">
+        <label for="debtorName">Debtor Name</label>
+        <input type="text" id="debtorName" formControlName="name" placeholder="e.g., Test Client" maxlength="70">
+        <span class="error-msg" *ngIf="isInvalid('debtorAddress.name')">
+          {{ getErrorMessage('debtorAddress.name', 'Debtor Name') }}
+        </span>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group flex-3">
+          <label for="debtorStreet">Street</label>
+          <input type="text" id="debtorStreet" formControlName="street" placeholder="e.g., Teststrasse" maxlength="70">
+          <span class="error-msg" *ngIf="isInvalid('debtorAddress.street')">
+            {{ getErrorMessage('debtorAddress.street', 'Street') }}
+          </span>
+        </div>
+        <div class="input-group flex-1">
+          <label for="debtorHouseNo">No.</label>
+          <input type="text" id="debtorHouseNo" formControlName="houseNo" placeholder="e.g., 5" maxlength="16">
+          <span class="error-msg" *ngIf="isInvalid('debtorAddress.houseNo')">
+            {{ getErrorMessage('debtorAddress.houseNo', 'House no.') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group flex-1">
+          <label for="debtorZip">ZIP</label>
+          <input type="text" id="debtorZip" formControlName="postalCode" placeholder="e.g., 3000" maxlength="16">
+          <span class="error-msg" *ngIf="isInvalid('debtorAddress.postalCode')">
+            {{ getErrorMessage('debtorAddress.postalCode', 'ZIP') }}
+          </span>
+        </div>
+        <div class="input-group flex-2">
+          <label for="debtorCity">City</label>
+          <input type="text" id="debtorCity" formControlName="town" placeholder="e.g., Bern" maxlength="35">
+          <span class="error-msg" *ngIf="isInvalid('debtorAddress.town')">
+            {{ getErrorMessage('debtorAddress.town', 'City') }}
+          </span>
+        </div>
+        <div class="input-group flex-1">
+          <label for="debtorCountry">Country</label>
+          <input type="text" id="debtorCountry" formControlName="countryCode" placeholder="CH" maxlength="2">
+          <span class="error-msg" *ngIf="isInvalid('debtorAddress.countryCode')">
+            {{ getErrorMessage('debtorAddress.countryCode', 'Country') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="tab-pane-navigation dual-buttons">
+        <button type="button" class="btn btn-secondary" (click)="setTab(1)">⬅ Previous</button>
+        <button type="button" class="btn btn-primary" (click)="setTab(3)">Next: References ➔</button>
+      </div>
+    </div>
+
+    <!-- Tab 4: Reference & Message (Active Tab 3) -->
+    <div class="tab-pane" *ngIf="activeTab === 3">
+      <div class="tab-header-description">
+        <h3>Reference & Message</h3>
+        <p>Set ISO-compliant reference identifiers and optional message attachments.</p>
+      </div>
+
+      <div class="input-group" formGroupName="reference">
+        <label for="referenceType">Reference Type *</label>
+        <select id="referenceType" formControlName="referenceType">
+          <option value="QRR">QR-Reference (QRR)</option>
+          <option value="SCOR">Structured Creditor Reference (SCOR)</option>
+          <option value="NON">No Reference (NON)</option>
+        </select>
+        <span class="error-msg" *ngIf="isInvalid('reference.referenceType')">
+          {{ getErrorMessage('reference.referenceType', 'Reference Type') }}
+        </span>
+      </div>
+
+      <!-- Conditional Reference Number Input -->
+      <div class="input-group" *ngIf="qrForm.get('reference.referenceType')?.value !== 'NON'" formGroupName="reference">
+        <label for="referenceNumber">Reference Number *</label>
+        <input type="text" id="referenceNumber" formControlName="referenceNumber" placeholder="Payment reference">
+        <span class="error-msg" *ngIf="isInvalid('reference.referenceNumber')">
+          {{ getErrorMessage('reference.referenceNumber', 'Reference Number') }}
+        </span>
+      </div>
+      <small class="hint-text mb-4">{{ referenceHint }}</small>
+
+      <div class="input-group">
+        <label for="message">Message / Additional Info (Optional)</label>
+        <input type="text" id="message" [formControl]="$any(qrForm.get('message'))" placeholder="e.g., Invoice 1042" maxlength="140">
+        <span class="error-msg" *ngIf="isInvalid('message')">
+          {{ getErrorMessage('message', 'Message') }}
+        </span>
+      </div>
+
+      <div class="tab-pane-navigation dual-buttons">
+        <button type="button" class="btn btn-secondary" (click)="setTab(2)">⬅ Previous</button>
+        <button type="submit" id="btnGenerate" class="btn btn-primary btn-glowing" [disabled]="qrForm.invalid">Generate QR-Bill ✓</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CentralIZED Global Actions Section -->
+  <div class="global-form-actions mt-6 pt-4 border-t border-slate-700">
+    <button type="button" id="btnDownload" class="btn btn-success" (click)="onDownloadPdf()" [disabled]="qrForm.invalid">
+      <span class="btn-icon">📥</span> Download PDF
+    </button>
+    <button type="button" id="btnPrint" class="btn btn-secondary" (click)="onPrint()" [disabled]="!isGenerated">
+      <span class="btn-icon">🖨️</span> Print QR-Bill
+    </button>
+  </div>
+
 </form>

@@ -41,7 +41,7 @@ public class QrBillControllerTest {
         QrBillRequest request = new QrBillRequest();
         
         Address creditor = new Address();
-        creditor.setName("Exata Indonesia AG");
+        creditor.setName("Helvetia AG");
         creditor.setStreet("Bahnhofstrasse");
         creditor.setHouseNo("1");
         creditor.setPostalCode("8001");
